@@ -1,26 +1,53 @@
-import csv
-
+import psycopg2
 
 class ItemRepository:
 
-    def __init__(self):
-        self.items = []
-        self.load_items()
+    def __init__(self, connection):
+        self.connection = connection
 
     def load_items(self):
-        with open('sample_grocery.csv', 'r') as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                self.items.append(row)
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM my_schema.items")
+        items = []
+        for row in cursor:
+            items.append({
+                "SKU": row[0],
+                "Name": row[1],
+                "Description": row[2],
+                "Price": row[3],
+                "Quantity": row[4],
+                "Expiration Date": row[5]
+            })
+        return items
 
     def get_items(self):
-        return self.items
+        return self.load_items()
 
     def add_item(self, item):
-        self.items.append(item)
+        row = item
+        cursor = self.connection.cursor()
+        cursor.execute("INSERT INTO my_schema.items (sku, name, description, price, quantity,  expiration_date) VALUES (%s, %s, %s, %s, %s, %s)", (row["SKU"], row["Name"], row["Description"], row["Price"], row["Quantity"], row["Expiration Date"]))
+        self.connection.commit()
+        return "Item added successfully"
 
     def delete_item(self, sku):
-        for index, item in enumerate(self.items):
-            if item['sku'] == sku:
-                del self.items[index]
-                break
+        cursor = self.connection.cursor()
+        cursor.execute("DELETE FROM my_schema.items WHERE sku=%s", (sku,))
+        self.connection.commit()
+        return "Item deleted successfully"
+    
+    def get_item(self, sku):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM my_schema.items WHERE sku=%s", (sku,))
+        row = cursor.fetchone()
+        if row:
+            return {
+                "SKU": row[0],
+                "Name": row[1],
+                "Description": row[2],
+                "Price": row[3],
+                "Quantity": row[4],
+                "Expiration Date": row[5]
+            }
+        else:
+            return None
