@@ -23,3 +23,7 @@ Gestión de Transacciones Distribuidas porque con microservicios, la gestión de
 Gestión de Configuración Externa ya que, al externalizar la configuración, incluida la conexión a la base de datos y la ubicación del archivo CSV, para permitir una mayor flexibilidad y fácil administración de la configuración en un entorno de microservicios.
 
 Logging y Monitoreo Distribuido porque al implementar un sistema de logging y monitoreo distribuido para rastrear y analizar el rendimiento y la salud de cada microservicio en un entorno distribuido.
+
+
+Video proyecto:
+https://drive.google.com/drive/folders/1ykpnBc-mwZPmwvXeMIoArlq2jjDlBhcS?usp=sharing
