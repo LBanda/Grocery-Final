@@ -1,5 +1,6 @@
 import psycopg2
-
+from flask import request
+import json
 class ItemRepository:
 
     def __init__(self, connection):
@@ -22,13 +23,26 @@ class ItemRepository:
 
     def get_items(self):
         return self.load_items()
-
+    
     def add_item(self, item):
         row = item
         cursor = self.connection.cursor()
         cursor.execute("INSERT INTO my_schema.items (sku, name, description, price, quantity,  expiration_date) VALUES (%s, %s, %s, %s, %s, %s)", (row["SKU"], row["Name"], row["Description"], row["Price"], row["Quantity"], row["Expiration Date"]))
         self.connection.commit()
-        return "Item added successfully"
+        return "Item added successfully" 
+    """
+    def add_item(self):
+        item_data = request.data
+        item = json.loads(item_data.decode('utf-8'))
+
+        row = item
+        cursor = self.connection.cursor()
+        cursor.execute("INSERT INTO my_schema.items (sku, name, description, price, quantity, expiration_date) VALUES (%s, %s, %s, %s, %s, %s)", (row["SKU"], row["Name"], row["Description"], row["Price"], row["Quantity"], row["Expiration Date"]))
+        self.connection.commit()
+
+        return "Item added successfully"  """
+
+
 
     def delete_item(self, sku):
         cursor = self.connection.cursor()

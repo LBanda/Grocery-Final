@@ -27,11 +27,17 @@ class ItemController:
             json_items.append(json_item)
 
         return json.dumps(json_items)
-
+    """
+    def add_item(self, item_data):
+        item = json.loads(item_data)
+        self.item_repository.add_item(item)
+        return 'Item added successfully' """
+    
     def add_item(self):
         item = json.loads(request.data)
         self.item_repository.add_item(item)
         return 'Item added successfully'
+
 
     def delete_item(self, sku):
         self.item_repository.delete_item(sku)
@@ -55,16 +61,13 @@ class ItemController:
     def convert_currency(self, sku, currency):
         item = self.item_repository.get_item(sku)
         if item:
-            # Get the latest exchange rate
-            exchange_rate_url = f"http://api.exchangeratesapi.io/v1/latest?access_key=5e0faf80ce61a99fbbdef6377380c1bd&base=USD&symbols={currency}"
+            exchange_rate_url = f"http://api.exchangeratesapi.io/v1/latest?access_key=6aa9ad73dc0b72c4d4fb809216daca2f&symbols={currency}"
             response = request.get(exchange_rate_url)
             exchange_rate_data = json.loads(response.content)
 
-            # Convert the price
             exchange_rate = exchange_rate_data["rates"][currency]
             converted_price = item["Price"] * exchange_rate
 
-            # Return the converted price
             return json.dumps({
                 "SKU": item["SKU"],
                 "Name": item["Name"],
@@ -74,4 +77,5 @@ class ItemController:
                 "Expiration Date": str(item["Expiration Date"])
             })
         else:
-            return 'Item not found'
+            return 'Item not found' 
+
